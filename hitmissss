@@ -1,0 +1,31 @@
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Create a binary image
+image = np.zeros((10, 10), dtype=np.uint8)
+image[4:6, 4:6] = 1  # Square shape
+
+# Define a structuring element
+se = np.array([[0, 1, 0],
+               [1, 1, 1],
+               [0, 1, 0]], dtype=np.uint8)
+
+# Hit-or-Miss Transform: dilation of image and complement
+image_complement = cv2.bitwise_not(image)
+
+# Dilation of image and complement with structuring element
+dilated_image = cv2.dilate(image, se)
+dilated_complement = cv2.dilate(image_complement, se)
+
+# Hit-or-Miss result is the logical AND of the two dilated images
+hit_or_miss = cv2.bitwise_and(dilated_image, dilated_complement)
+
+# Show the original and result images
+plt.subplot(1, 2, 1)
+plt.title('Original Image')
+plt.imshow(image, cmap='gray')
+plt.subplot(1, 2, 2)
+plt.title('Hit-or-Miss Transform')
+plt.imshow(hit_or_miss, cmap='gray')
+plt.show()

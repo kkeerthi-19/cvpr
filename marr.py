@@ -1,48 +1,20 @@
-import cv2
 import numpy as np
+import cv2
 import matplotlib.pyplot as plt
 
-# Load the original image
-f = cv2.imread('imgg.jpg')
+def marr_hildreth_edge_detection(image, sigma=1.0):
+    gaussian = cv2.GaussianBlur(image, (5, 5), sigma)
+    laplacian = cv2.Laplacian(gaussian, cv2.CV_64F)
+    edges = ((laplacian < 0) & (cv2.dilate(laplacian, None) > 0)).astype(np.uint8) * 255
+    return edges
 
-# Convert the original image to grayscale
-gray_image = cv2.cvtColor(f, cv2.COLOR_BGR2GRAY)
+image = cv2.imread('ika.jpg')
+edges = marr_hildreth_edge_detection(image, sigma=1.5)
 
-# Apply Marr-Hildreth edge detection using LoG filter
-laplacian = cv2.Laplacian(gray_image, cv2.CV_64F)
-laplacian_abs = np.absolute(laplacian)
-marr_hildreth_e = cv2.convertScaleAbs(laplacian_abs)
-
-# Define the random constant c
-c = 1
-
-# Perform the element-wise addition for Marr-Hildreth
-g_marr_hildreth = cv2.add(f, cv2.merge([marr_hildreth_e] * 3) * c)
-g_marr_hildreth = np.clip(g_marr_hildreth, 0, 255).astype(np.uint8)
-
-# Display the images
-plt.figure(figsize=(8, 6))
-
-# Display the original image
-plt.subplot(2, 2, 1)
-plt.imshow(cv2.cvtColor(f, cv2.COLOR_BGR2RGB))
-plt.title('Original Image')
-plt.axis('off')
-
-# Display the generated Marr-Hildreth edge detection image
-plt.subplot(2, 2, 2)
-plt.imshow(marr_hildreth_e, cmap='gray')
-plt.title('Generated Marr-Hildreth Edge Detection')
-plt.axis('off')
-
-# Display the generated output image for Marr-Hildreth
-plt.subplot(2, 2, 3)
-plt.imshow(cv2.cvtColor(g_marr_hildreth, cv2.COLOR_BGR2RGB))
-plt.title('Output Image (Marr-Hildreth)')
-plt.axis('off')
-
-# Adjust spacing between images
-plt.subplots_adjust(hspace=0.5, wspace=0.3)
-
-plt.tight_layout()
+plt.subplot(1, 2, 1)
+plt.title("Original Image")
+plt.imshow(image, cmap='gray')
+plt.subplot(1, 2, 2)
+plt.title("Marr-Hildreth Edges")
+plt.imshow(edges, cmap='gray')
 plt.show()

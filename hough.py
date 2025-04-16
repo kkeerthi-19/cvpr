@@ -1,7 +1,7 @@
 import numpy as np
 import cv2
 # Read image
-img = cv2.imread('imgg.jpg',cv2.IMREAD_COLOR) # road.png is the filename
+img = cv2.imread("cric.jpg",cv2.IMREAD_COLOR) # road.png is the filename
 
 # Convert the image to grayscale
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)

@@ -1,0 +1,41 @@
+from sklearn.datasets import load_digits
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import classification_report, accuracy_score
+import matplotlib.pyplot as plt
+
+# Load digits dataset
+digits = load_digits()
+X = digits.data
+y = digits.target
+
+# Split dataset
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# Train Naive Bayes
+gnb = GaussianNB()
+gnb.fit(X_train, y_train)
+
+# Predict
+y_pred = gnb.predict(X_test)
+
+# Evaluation
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Accuracy: {accuracy * 100:.2f}%\n")
+print("Classification Report:")
+print(classification_report(y_test, y_pred))
+
+# Subplot of predictions
+fig, axes = plt.subplots(4, 4, figsize=(8, 8))
+fig.suptitle("Naive Bayes - Digit Predictions", fontsize=16)
+
+for i, ax in enumerate(axes.flat):
+    ax.imshow(X_test[i].reshape(8, 8), cmap='gray')
+    ax.set_title(f"P: {y_pred[i]} | A: {y_test[i]}", fontsize=10)
+    ax.axis('off')
+
+plt.tight_layout()
+plt.subplots_adjust(top=0.9)  # Adjust space for suptitle
+plt.show()
